@@ -46,6 +46,8 @@ import com.asfoundation.wallet.entity.TransactionBuilder
 import com.asfoundation.wallet.fingerprint.FingerprintPreferencesRepositoryContract
 import com.asfoundation.wallet.interact.*
 import com.asfoundation.wallet.logging.Logger
+import com.asfoundation.wallet.nfts.NftInteractor
+import com.asfoundation.wallet.nfts.repository.NftRepository
 import com.asfoundation.wallet.permissions.PermissionsInteractor
 import com.asfoundation.wallet.promotions.PromotionsInteractor
 import com.asfoundation.wallet.rating.RatingInteractor
@@ -593,10 +595,23 @@ class InteractorModule {
 
   @Singleton
   @Provides
-  fun providesWalletVerificationInteractor(verificationRepository: VerificationRepository,
-                                           adyenPaymentRepository: AdyenPaymentRepository,
-                                           walletService: WalletService): WalletVerificationInteractor {
-    return WalletVerificationInteractor(verificationRepository, adyenPaymentRepository,
-        walletService)
+  fun providesWalletVerificationInteractor(
+    verificationRepository: VerificationRepository,
+    adyenPaymentRepository: AdyenPaymentRepository,
+    walletService: WalletService
+  ): WalletVerificationInteractor {
+    return WalletVerificationInteractor(
+      verificationRepository, adyenPaymentRepository,
+      walletService
+    )
+  }
+
+  @Singleton
+  @Provides
+  fun providesNftInteractor(
+    walletService: WalletService,
+    nftRepository: NftRepository
+  ): NftInteractor {
+    return NftInteractor(walletService as AccountWalletService, nftRepository, Schedulers.io())
   }
 }

@@ -1,0 +1,11 @@
+package com.asfoundation.wallet.nfts
+
+import com.google.gson.annotations.SerializedName
+
+data class NftResponse(val assets: List<NftAssetResponse>)
+
+data class NftAssetResponse(
+  @SerializedName("id") val id: String,
+  @SerializedName("image_preview_url") val image_preview_url: String,
+  @SerializedName("name") val name: String
+)

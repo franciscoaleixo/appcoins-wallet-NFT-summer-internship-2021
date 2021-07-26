@@ -36,6 +36,8 @@ import com.asfoundation.wallet.identification.IdsRepository
 import com.asfoundation.wallet.interact.DefaultTokenProvider
 import com.asfoundation.wallet.interact.GetDefaultWalletBalanceInteract
 import com.asfoundation.wallet.logging.Logger
+import com.asfoundation.wallet.nfts.repository.NftRepository
+import com.asfoundation.wallet.nfts.repository.api.NftApi
 import com.asfoundation.wallet.poa.BlockchainErrorMapper
 import com.asfoundation.wallet.rating.RatingRepository
 import com.asfoundation.wallet.repository.*
@@ -339,6 +341,7 @@ class RepositoryModule {
                                logger: Logger): RatingRepository {
     return RatingRepository(sharedPreferences, walletFeedbackApi, logger)
   }
+
   @Singleton
   @Provides
   fun providesCarrierBillingPreferencesRepository(
@@ -368,6 +371,23 @@ class RepositoryModule {
     withdrawRepository: WithdrawRepository
   ): WithdrawFiatUseCase {
     return WithdrawFiatUseCase(ewt, withdrawRepository)
+  }
+
+  @Singleton
+  @Provides
+  fun providesNftRepository(
+    @Named("default") client: OkHttpClient,
+    gson: Gson
+  ): NftRepository {
+    val retrofit = Retrofit.Builder()
+      .baseUrl("https://rinkeby-api.opensea.io/api/v1/")
+      .addConverterFactory(GsonConverterFactory.create(gson))
+      .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+      .client(client)
+      .build()
+    val api = retrofit.create(NftApi::class.java)
+    return NftRepository(api)
+
   }
 
 }

@@ -2,6 +2,7 @@ package com.asfoundation.wallet.ui.balance
 
 import com.asfoundation.wallet.billing.analytics.WalletsAnalytics
 import com.asfoundation.wallet.billing.analytics.WalletsEventSender
+import com.asfoundation.wallet.nfts.NftInteractor
 import com.asfoundation.wallet.ui.iab.FiatValue
 import com.asfoundation.wallet.util.CurrencyFormatUtils
 import com.asfoundation.wallet.util.WalletCurrency
@@ -14,14 +15,17 @@ import io.reactivex.disposables.CompositeDisposable
 import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 
-class BalanceFragmentPresenter(private val view: BalanceFragmentView,
-                               private val activityView: BalanceActivityView?,
-                               private val balanceInteractor: BalanceInteractor,
-                               private val walletsEventSender: WalletsEventSender,
-                               private val networkScheduler: Scheduler,
-                               private val viewScheduler: Scheduler,
-                               private val disposables: CompositeDisposable,
-                               private val formatter: CurrencyFormatUtils) {
+class BalanceFragmentPresenter(
+  private val view: BalanceFragmentView,
+  private val activityView: BalanceActivityView?,
+  private val balanceInteractor: BalanceInteractor,
+  private val nftInteractor: NftInteractor,
+  private val walletsEventSender: WalletsEventSender,
+  private val networkScheduler: Scheduler,
+  private val viewScheduler: Scheduler,
+  private val disposables: CompositeDisposable,
+  private val formatter: CurrencyFormatUtils
+) {
 
 
   companion object {
@@ -34,6 +38,7 @@ class BalanceFragmentPresenter(private val view: BalanceFragmentView,
   fun present() {
     view.setupUI()
     requestBalances()
+    requestNftCount()
     handleTokenDetailsClick()
     handleCopyClick()
     handleQrCodeClick()
@@ -155,10 +160,19 @@ class BalanceFragmentPresenter(private val view: BalanceFragmentView,
 
   private fun requestBalances() {
     disposables.add(balanceInteractor.requestTokenConversion()
-        .subscribeOn(networkScheduler)
-        .observeOn(viewScheduler)
-        .doOnNext { updateUI(it) }
-        .subscribe({}, { it.printStackTrace() })
+      .subscribeOn(networkScheduler)
+      .observeOn(viewScheduler)
+      .doOnNext { updateUI(it) }
+      .subscribe({}, { it.printStackTrace() })
+    )
+  }
+
+  private fun requestNftCount() {
+    disposables.add(nftInteractor.getNFTCount()
+      .subscribeOn(networkScheduler)
+      .observeOn(viewScheduler)
+      .doOnSuccess { updateNftCount(it) }
+      .subscribe({}, { it.printStackTrace() })
     )
   }
 
@@ -172,14 +186,19 @@ class BalanceFragmentPresenter(private val view: BalanceFragmentView,
   private fun handleTokenDetailsClick() {
     disposables.add(
         Observable.merge(view.getCreditClick()
-            .doOnNext { walletsEventSender.sendAction("currency_details_credits") },
-            view.getAppcClick()
-                .doOnNext { walletsEventSender.sendAction("currency_details_appc") },
-            view.getEthClick()
-                .doOnNext { walletsEventSender.sendAction("currency_details_eth") })
-            .throttleFirst(500, TimeUnit.MILLISECONDS)
-            .map { view.showTokenDetails(it) }
-            .subscribe({}, { it.printStackTrace() }))
+          .doOnNext { walletsEventSender.sendAction("currency_details_credits") },
+          view.getAppcClick()
+            .doOnNext { walletsEventSender.sendAction("currency_details_appc") },
+          view.getEthClick()
+            .doOnNext { walletsEventSender.sendAction("currency_details_eth") })
+          .throttleFirst(500, TimeUnit.MILLISECONDS)
+          .map { view.showTokenDetails(it) }
+          .subscribe({}, { it.printStackTrace() })
+    )
+  }
+
+  private fun updateNftCount(count: Int) {
+    view.updateNFTData("$count")
   }
 
   private fun updateTokenBalance(balance: TokenBalance, currency: WalletCurrency) {

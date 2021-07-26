@@ -8,10 +8,14 @@ interface BalanceFragmentView {
 
   fun setupUI()
 
-  fun updateTokenValue(tokenBalance: String,
-                       fiatBalance: String,
-                       tokenCurrency: WalletCurrency,
-                       fiatCurrency: String)
+  fun updateTokenValue(
+    tokenBalance: String,
+    fiatBalance: String,
+    tokenCurrency: WalletCurrency,
+    fiatCurrency: String
+  )
+
+  fun updateNFTData(nftCount: String)
 
   fun updateOverallBalance(overallBalance: String, currency: String, symbol: String)
 

@@ -14,6 +14,7 @@ import android.widget.PopupWindow
 import com.airbnb.lottie.LottieAnimationView
 import com.asf.wallet.R
 import com.asfoundation.wallet.billing.analytics.WalletsEventSender
+import com.asfoundation.wallet.nfts.NftInteractor
 import com.asfoundation.wallet.ui.MyAddressActivity
 import com.asfoundation.wallet.ui.wallets.WalletsFragment
 import com.asfoundation.wallet.util.CurrencyFormatUtils
@@ -46,6 +47,9 @@ class BalanceFragment : BasePageViewFragment(), BalanceFragmentView {
   lateinit var balanceInteractor: BalanceInteractor
 
   @Inject
+  lateinit var nftInteractor: NftInteractor
+
+  @Inject
   lateinit var walletsEventSender: WalletsEventSender
 
   @Inject
@@ -74,8 +78,10 @@ class BalanceFragment : BasePageViewFragment(), BalanceFragmentView {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    presenter = BalanceFragmentPresenter(this, activityView, balanceInteractor, walletsEventSender,
-        Schedulers.io(), AndroidSchedulers.mainThread(), CompositeDisposable(), formatter)
+    presenter = BalanceFragmentPresenter(
+      this, activityView, balanceInteractor, nftInteractor, walletsEventSender,
+      Schedulers.io(), AndroidSchedulers.mainThread(), CompositeDisposable(), formatter
+    )
     onBackPressedSubject = PublishSubject.create()
   }
 
@@ -164,7 +170,7 @@ class BalanceFragment : BasePageViewFragment(), BalanceFragmentView {
     (ether_token.token_balance_placeholder as LottieAnimationView).playAnimation()
 
     nft_token.token_icon.setImageResource(R.drawable.ic_nft_logo)
-    nft_token.token_name.text = getString(R.string.ethereum_token_name)
+    nft_token.token_name.text = getString(R.string.nft_token_name)
     (nft_token.token_balance_placeholder as LottieAnimationView).playAnimation()
   }
 
@@ -202,12 +208,23 @@ class BalanceFragment : BasePageViewFragment(), BalanceFragmentView {
               "$tokenBalance ${tokenCurrency.symbol}"
           ether_token.token_balance.visibility = View.VISIBLE
           ether_token.token_balance_converted.text =
-              "$fiatCurrency$fiatBalance"
+            "$fiatCurrency$fiatBalance"
           ether_token.token_balance_converted.visibility = View.VISIBLE
         }
         else -> return
       }
     }
+  }
+
+  override fun updateNFTData(nftCount: String) {
+    nft_token.token_balance_placeholder.visibility = View.GONE
+    (nft_token.token_balance_placeholder as LottieAnimationView).cancelAnimation()
+    val plural = if (nftCount == "0") "" else "s"
+    nft_token.token_balance.text = "$nftCount NFT$plural"
+    nft_token.token_balance.visibility = View.VISIBLE
+    nft_token.token_balance_converted.text =
+      "" //TODO implement a way to see the value of my nft inventory
+    nft_token.token_balance_converted.visibility = View.VISIBLE
   }
 
   @SuppressLint("SetTextI18n")
@@ -216,7 +233,7 @@ class BalanceFragment : BasePageViewFragment(), BalanceFragmentView {
       balance_label_placeholder.visibility = View.GONE
       (balance_label_placeholder as LottieAnimationView).cancelAnimation()
       balance_label.text =
-          String.format(getString(R.string.balance_total_body), currency)
+        String.format(getString(R.string.balance_total_body), currency)
       balance_label.visibility = View.VISIBLE
 
       balance_value_placeholder.visibility = View.GONE
