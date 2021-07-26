@@ -162,6 +162,10 @@ class BalanceFragment : BasePageViewFragment(), BalanceFragmentView {
     ether_token.token_icon.setImageResource(R.drawable.ic_eth_token)
     ether_token.token_name.text = getString(R.string.ethereum_token_name)
     (ether_token.token_balance_placeholder as LottieAnimationView).playAnimation()
+
+    nft_token.token_icon.setImageResource(R.drawable.ic_nft_logo)
+    nft_token.token_name.text = getString(R.string.ethereum_token_name)
+    (nft_token.token_balance_placeholder as LottieAnimationView).playAnimation()
   }
 
   @SuppressLint("SetTextI18n")

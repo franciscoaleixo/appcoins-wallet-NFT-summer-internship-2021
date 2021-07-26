@@ -325,6 +325,11 @@
               android:id="@+id/ether_token"
               layout="@layout/balance_token_item"
               />
+          <include
+              android:id="@+id/nft_token"
+              layout="@layout/balance_token_item"
+              />
+
         </LinearLayout>
 
         <!-- empty view to add margin due to the bottom sheet and scroll -->

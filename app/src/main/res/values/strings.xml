@@ -473,6 +473,7 @@
   <string name="appc_token_name" translatable="false">AppCoins</string>
   <string name="appc_credits_token_name" translatable="false">AppCoins Credits</string>
   <string name="ethereum_token_name" translatable="false">Ethereum</string>
+  <string name="nft_token_name" translatable="false">NFT</string>
 
   <!--Settings-->
   <string name="title_redeem">Redeem Code</string>
