@@ -219,7 +219,7 @@ class BalanceFragment : BasePageViewFragment(), BalanceFragmentView {
   override fun updateNFTData(nftCount: String) {
     nft_token.token_balance_placeholder.visibility = View.GONE
     (nft_token.token_balance_placeholder as LottieAnimationView).cancelAnimation()
-    val plural = if (nftCount == "0") "" else "s"
+    val plural = if (nftCount == "1") "" else "s"
     nft_token.token_balance.text = "$nftCount NFT$plural"
     nft_token.token_balance.visibility = View.VISIBLE
     nft_token.token_balance_converted.text =
