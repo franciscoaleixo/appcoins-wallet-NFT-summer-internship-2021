@@ -9,20 +9,22 @@
     android:layout_marginVertical="5dp"
     android:background="@drawable/background_card"
     android:elevation="2dp"
+    android:transitionName="nftAssetLayout"
 
     >
   <ImageView
-      android:id="@+id/level_locked_icon"
-      android:layout_width="140dp"
-      android:layout_height="140dp"
+      android:id="@+id/nft_image"
+      android:layout_width="120dp"
+      android:layout_height="120dp"
       android:layout_marginStart="16dp"
       android:src="@drawable/gamification_lock"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintTop_toTopOf="parent"
+      android:transitionName="nftAssetImage"
       />
   <TextView
-      android:id="@+id/locked_text"
+      android:id="@+id/nft_title"
       style="@style/TextAppearance.AppCompat.Body1.Roboto.Regular"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
@@ -35,8 +37,9 @@
       android:gravity="right"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toEndOf="@id/level_locked_icon"
+      app:layout_constraintStart_toEndOf="@id/nft_image"
       app:layout_constraintTop_toTopOf="parent"
       tools:text="NFT name here"
+      android:transitionName="nftAssetName"
       />
 </androidx.constraintlayout.widget.ConstraintLayout>

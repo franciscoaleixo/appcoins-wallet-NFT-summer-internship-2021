@@ -25,6 +25,8 @@ interface BalanceFragmentView {
 
   fun getEthClick(): Observable<View>
 
+  fun getNftClick(): Observable<Any>
+
   fun showTokenDetails(view: View)
 
   fun getCopyClick(): Observable<Any>
@@ -66,6 +68,8 @@ interface BalanceFragmentView {
   fun getBottomSheetStateChanged(): Observable<Int>
 
   fun openWalletVerificationScreen()
+
+  fun openNftWalletScreen()
 
   fun showVerifiedWalletChip()
 

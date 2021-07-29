@@ -16,6 +16,7 @@ import com.asf.wallet.R
 import com.asfoundation.wallet.billing.analytics.WalletsEventSender
 import com.asfoundation.wallet.nfts.NftInteractor
 import com.asfoundation.wallet.ui.MyAddressActivity
+import com.asfoundation.wallet.ui.nft.NftWalletFragment
 import com.asfoundation.wallet.ui.wallets.WalletsFragment
 import com.asfoundation.wallet.util.CurrencyFormatUtils
 import com.asfoundation.wallet.util.WalletCurrency
@@ -263,6 +264,8 @@ class BalanceFragment : BasePageViewFragment(), BalanceFragmentView {
     activityView?.showTokenDetailsScreen(tokenId, view.token_icon, view.token_name, view)
   }
 
+  override fun getNftClick() = RxView.clicks(nft_token)
+
   override fun getVerifyWalletClick() = RxView.clicks(verify_wallet_button)
 
   override fun getInsertCodeClick() = RxView.clicks(insert_code_button)
@@ -311,11 +314,18 @@ class BalanceFragment : BasePageViewFragment(), BalanceFragmentView {
   override fun openWalletVerificationScreen() {
     context?.let {
       val intent = VerificationActivity.newIntent(it)
-          .apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-          }
+        .apply {
+          flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
       startActivity(intent)
     }
+  }
+
+  override fun openNftWalletScreen() {
+    fragmentManager!!.beginTransaction()
+      .replace(R.id.fragment_container, NftWalletFragment.newInstance())
+      .addToBackStack(null)
+      .commit()
   }
 
   override fun showVerifiedWalletChip() {

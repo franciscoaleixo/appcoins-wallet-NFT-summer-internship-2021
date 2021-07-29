@@ -1,5 +1,6 @@
 package com.asfoundation.wallet.nfts
 
+import com.asfoundation.wallet.nfts.domain.NftAsset
 import com.asfoundation.wallet.nfts.repository.NftRepository
 import com.asfoundation.wallet.service.AccountWalletService
 import io.reactivex.Scheduler
@@ -13,6 +14,11 @@ class NftInteractor(
   fun getNFTCount(): Single<Int> {
     return accountWalletService.find()
       .flatMap { nftRepository.getNFTCount(it.address) }
+  }
+
+  fun getNFTAsset(): Single<List<NftAsset>> {
+    return accountWalletService.find()
+      .flatMap { nftRepository.getNFTAssetList(it.address) }
   }
 /*
     private fun getStoredNFTCount(walletAddress: String?): Single<Integer> {

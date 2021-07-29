@@ -17,7 +17,8 @@ class NftRepository(
         NftAsset(
           assetResponse.id,
           assetResponse.image_preview_url,
-          assetResponse.name
+          assetResponse.name,
+          assetResponse.description
         )
       }
     }

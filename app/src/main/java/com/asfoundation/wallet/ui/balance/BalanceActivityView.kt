@@ -3,14 +3,24 @@ package com.asfoundation.wallet.ui.balance
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.asfoundation.wallet.nfts.domain.NftAsset
 import io.reactivex.Observable
 
 interface BalanceActivityView {
 
   fun showBalanceScreen()
 
-  fun showTokenDetailsScreen(tokenDetailsId: TokenDetailsActivity.TokenDetailsId,
-                             imgView: ImageView, textView: TextView, parentView: View)
+  fun showTokenDetailsScreen(
+    tokenDetailsId: TokenDetailsActivity.TokenDetailsId,
+    imgView: ImageView, textView: TextView, parentView: View
+  )
+
+  fun showNftDetailsScreen(
+    imgView: ImageView,
+    textView: TextView,
+    parentView: View,
+    asset: NftAsset
+  )
 
   fun setupToolbar()
 

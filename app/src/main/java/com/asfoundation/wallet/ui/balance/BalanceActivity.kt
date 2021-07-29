@@ -16,9 +16,11 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
 import com.asf.wallet.R
 import com.asfoundation.wallet.navigator.ActivityNavigator
+import com.asfoundation.wallet.nfts.domain.NftAsset
 import com.asfoundation.wallet.restore.RestoreWalletActivity
 import com.asfoundation.wallet.router.TransactionsRouter
 import com.asfoundation.wallet.ui.backup.BackupActivity.Companion.newIntent
+import com.asfoundation.wallet.ui.nft.NftDetailsActivity
 import com.asfoundation.wallet.ui.wallets.RemoveWalletActivity
 import com.asfoundation.wallet.ui.wallets.WalletDetailsFragment
 import io.reactivex.subjects.PublishSubject
@@ -76,23 +78,53 @@ class BalanceActivity : ActivityNavigator(), BalanceActivityView {
 
     val intent = TokenDetailsActivity.newInstance(this, tokenDetailsId)
 
-    val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-        androidx.core.util.Pair(imgView, ViewCompat.getTransitionName(imgView)!!),
-        androidx.core.util.Pair(textView, ViewCompat.getTransitionName(textView)!!),
-        androidx.core.util.Pair(parentView,
-            ViewCompat.getTransitionName(parentView)!!))
+    val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+      this,
+      androidx.core.util.Pair(imgView, ViewCompat.getTransitionName(imgView)!!),
+      androidx.core.util.Pair(textView, ViewCompat.getTransitionName(textView)!!),
+      androidx.core.util.Pair(
+        parentView,
+        ViewCompat.getTransitionName(parentView)!!
+      )
+    )
 
     startActivity(intent, options.toBundle())
 
   }
 
+  override fun showNftDetailsScreen(
+    imgView: ImageView,
+    textView: TextView,
+    parentView: View,
+    asset: NftAsset
+  ) {
+    val description =
+      if (asset.description == null) "This NFT don't have a description" else asset.description
+    val intent =
+      NftDetailsActivity.newInstance(this, asset.name, description, asset.image_preview_url)
+
+    val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+      this,
+      androidx.core.util.Pair(imgView, ViewCompat.getTransitionName(imgView)!!),
+      androidx.core.util.Pair(textView, ViewCompat.getTransitionName(textView)!!),
+      androidx.core.util.Pair(
+        parentView,
+        ViewCompat.getTransitionName(parentView)!!
+      )
+    )
+
+    startActivity(intent, options.toBundle())
+  }
+
   override fun navigateToWalletDetailView(walletAddress: String, isActive: Boolean) {
     expandBottomSheet = true
     supportFragmentManager.beginTransaction()
-        .replace(R.id.fragment_container,
-            WalletDetailsFragment.newInstance(walletAddress, isActive))
-        .addToBackStack(WalletDetailsFragment::class.java.simpleName)
-        .commit()
+      .replace(
+        R.id.fragment_container,
+        WalletDetailsFragment.newInstance(walletAddress, isActive)
+      )
+      .addToBackStack(WalletDetailsFragment::class.java.simpleName)
+      .commit()
   }
 
   override fun navigateToRemoveWalletView(walletAddress: String, totalFiatBalance: String,

@@ -105,6 +105,10 @@
         android:label="@string/bottom_navigation_my_wallets"
         android:theme="@style/AppTheme.Transparent" />
     <activity
+        android:name="com.asfoundation.wallet.ui.nft.NftDetailsActivity"
+        android:label="@string/bottom_navigation_my_wallets"
+        android:theme="@style/AppTheme.Transparent" />
+    <activity
         android:name="com.asfoundation.wallet.ui.SendActivity"
         android:label="@string/title_activity_send" />
     <activity

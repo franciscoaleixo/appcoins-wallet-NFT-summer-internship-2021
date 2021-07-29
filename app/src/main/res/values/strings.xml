@@ -196,6 +196,7 @@
   <string name="title_activity_barcode">Barcode Scan</string>
   <string name="error_add_token">Couldn\'t add token.</string>
   <string name="facebook">Facebook</string>
+  <string name="nft">NFT</string>
   <string name="error_already_added">Already added</string>
   <string name="error_export">Failed to export the wallet</string>
   <string name="error_fail_load_tokens">Failed to load tokens list</string>

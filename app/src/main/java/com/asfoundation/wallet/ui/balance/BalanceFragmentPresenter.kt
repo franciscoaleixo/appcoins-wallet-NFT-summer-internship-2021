@@ -48,6 +48,7 @@ class BalanceFragmentPresenter(
     handleTooltipBackupClick()
     handleTooltipLaterClick()
     handleVerifyWalletClick()
+    handleNftClick()
     handleInsertCodeClick()
     handleCachedWalletInfoDisplay()
     handleBottomSheetStateChanged()
@@ -117,22 +118,33 @@ class BalanceFragmentPresenter(
 
   private fun handleVerifyWalletClick() {
     disposables.add(view.getVerifyWalletClick()
-        .doOnNext { walletsEventSender.sendVerifyAction("verify_wallet", "start_verification") }
-        .observeOn(viewScheduler)
-        .doOnNext { view.openWalletVerificationScreen() }
-        .subscribe({}, { it.printStackTrace() }))
+      .doOnNext { walletsEventSender.sendVerifyAction("verify_wallet", "start_verification") }
+      .observeOn(viewScheduler)
+      .doOnNext { view.openWalletVerificationScreen() }
+      .subscribe({}, { it.printStackTrace() })
+    )
+  }
+
+  private fun handleNftClick() {
+    disposables.add(view.getNftClick()
+      .observeOn(viewScheduler)
+      .doOnNext { view.openNftWalletScreen() }
+      .subscribe({}, { it.printStackTrace() })
+    )
   }
 
   private fun handleInsertCodeClick() {
     disposables.add(view.getInsertCodeClick()
-        .doOnNext { walletsEventSender.sendVerifyAction("verify_wallet", "insert_code") }
-        .observeOn(viewScheduler)
-        .doOnNext { view.openWalletVerificationScreen() }
-        .subscribe({}, { it.printStackTrace() }))
+      .doOnNext { walletsEventSender.sendVerifyAction("verify_wallet", "insert_code") }
+      .observeOn(viewScheduler)
+      .doOnNext { view.openWalletVerificationScreen() }
+      .subscribe({}, { it.printStackTrace() })
+    )
   }
 
   private fun handleCachedWalletInfoDisplay() {
-    disposables.add(balanceInteractor.requestActiveWalletAddress()
+    disposables.add(
+      balanceInteractor.requestActiveWalletAddress()
         .observeOn(viewScheduler)
         .doOnSuccess { handleValidationCache(it) }
         .subscribe({}, { it.printStackTrace() }))
