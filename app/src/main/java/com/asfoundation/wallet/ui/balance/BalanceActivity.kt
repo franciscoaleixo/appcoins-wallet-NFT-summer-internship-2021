@@ -99,7 +99,7 @@ class BalanceActivity : ActivityNavigator(), BalanceActivityView {
     asset: NftAsset
   ) {
     val description =
-      if (asset.description == null) "This NFT don't have a description" else asset.description
+      if (asset.description == null) "This NFT doesn't have a description" else asset.description
     val intent =
       NftDetailsActivity.newInstance(this, asset.name, description, asset.image_preview_url)
 

@@ -12,6 +12,7 @@ import com.asfoundation.wallet.nfts.NftInteractor
 import com.asfoundation.wallet.nfts.domain.NftAsset
 import com.asfoundation.wallet.ui.balance.BalanceActivityView
 import com.asfoundation.wallet.viewmodel.BasePageViewFragment
+import com.google.android.material.appbar.AppBarLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -19,6 +20,7 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_nft.*
 import kotlinx.android.synthetic.main.nft_layout.view.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 
 class NftWalletFragment : BasePageViewFragment(), NftWalletView {
@@ -96,10 +98,26 @@ class NftWalletFragment : BasePageViewFragment(), NftWalletView {
     recicleView.layoutManager = LinearLayoutManager(context)
     activityView?.setupToolbar()
     presenter.present()
+
+    (app_bar as AppBarLayout).addOnOffsetChangedListener(
+      AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+        if (nft_info_label != null) {
+          val percentage = abs(verticalOffset).toFloat() / appBarLayout.totalScrollRange
+          setAlpha(nft_info_value, percentage)
+          setAlpha(nft_info_label, percentage)
+          setAlpha(nft_info_lable_placeholder, percentage)
+          setAlpha(nft_info_value_placeholder, percentage)
+        }
+      })
   }
 
   override fun showNftDetails(view: View, asset: NftAsset) {
     activityView?.showNftDetailsScreen(view.nft_image, view.nft_title, view, asset)
   }
+
+  private fun setAlpha(view: View, alphaPercentage: Float) {
+    view.alpha = 1 - alphaPercentage * 1.20f
+  }
+
 
 }
