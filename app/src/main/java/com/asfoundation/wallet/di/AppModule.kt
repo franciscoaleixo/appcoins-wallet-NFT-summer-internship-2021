@@ -502,13 +502,35 @@ internal class AppModule {
   @Provides
   fun providesDefaultNetwork(): NetworkInfo {
     return if (BuildConfig.DEBUG) {
-      NetworkInfo(C.ROPSTEN_NETWORK_NAME, C.ETH_SYMBOL,
-          "https://ropsten.infura.io/v3/${BuildConfig.INFURA_API_KEY_ROPSTEN}",
-          "https://ropsten.trustwalletapp.com/", "https://ropsten.etherscan.io/tx/", 3, false)
+      NetworkInfo(
+        C.ROPSTEN_NETWORK_NAME, C.ETH_SYMBOL,
+        "https://ropsten.infura.io/v3/${BuildConfig.INFURA_API_KEY_ROPSTEN}",
+        "https://ropsten.trustwalletapp.com/", "https://ropsten.etherscan.io/tx/", 3, false
+      )
     } else {
-      NetworkInfo(C.ETHEREUM_NETWORK_NAME, C.ETH_SYMBOL,
-          "https://mainnet.infura.io/v3/${BuildConfig.INFURA_API_KEY_MAIN}",
-          "https://api.trustwalletapp.com/", "https://etherscan.io/tx/", 1, true)
+      NetworkInfo(
+        C.ETHEREUM_NETWORK_NAME, C.ETH_SYMBOL,
+        "https://mainnet.infura.io/v3/${BuildConfig.INFURA_API_KEY_MAIN}",
+        "https://api.trustwalletapp.com/", "https://etherscan.io/tx/", 1, true
+      )
+    }
+  }
+
+  @Singleton
+  @Provides
+  fun providesDefaultNFTNetwork(): NetworkInfo {
+    return if (BuildConfig.DEBUG) {
+      NetworkInfo(
+        C.RINKEBY_NETWORK_NAME, C.ETH_SYMBOL,
+        "https://rinkeby.infura.io/v3/${BuildConfig.INFURA_API_KEY_RINKEBY}",
+        "https://rinkeby.trustwalletapp.com/", "https://rinkeby.etherscan.io/tx/", 4, false
+      )
+    } else {
+      NetworkInfo(
+        C.ETHEREUM_NETWORK_NAME, C.ETH_SYMBOL,
+        "https://mainnet.infura.io/v3/${BuildConfig.INFURA_API_KEY_MAIN}",
+        "https://api.trustwalletapp.com/", "https://etherscan.io/tx/", 1, true
+      )
     }
   }
 
