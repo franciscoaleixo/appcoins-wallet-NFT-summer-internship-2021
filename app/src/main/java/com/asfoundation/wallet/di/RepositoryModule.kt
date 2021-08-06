@@ -36,16 +36,14 @@ import com.asfoundation.wallet.identification.IdsRepository
 import com.asfoundation.wallet.interact.DefaultTokenProvider
 import com.asfoundation.wallet.interact.GetDefaultWalletBalanceInteract
 import com.asfoundation.wallet.logging.Logger
+import com.asfoundation.wallet.nfts.NftNetworkInfo
 import com.asfoundation.wallet.nfts.repository.NftRepository
 import com.asfoundation.wallet.nfts.repository.api.NftApi
 import com.asfoundation.wallet.poa.BlockchainErrorMapper
 import com.asfoundation.wallet.rating.RatingRepository
 import com.asfoundation.wallet.repository.*
 import com.asfoundation.wallet.repository.OffChainTransactionsRepository.TransactionsApi
-import com.asfoundation.wallet.service.AccountKeystoreService
-import com.asfoundation.wallet.service.AutoUpdateService
-import com.asfoundation.wallet.service.GasService
-import com.asfoundation.wallet.service.WalletBalanceService
+import com.asfoundation.wallet.service.*
 import com.asfoundation.wallet.service.currencies.LocalCurrencyConversionService
 import com.asfoundation.wallet.support.SupportRepository
 import com.asfoundation.wallet.support.SupportSharedPreferences
@@ -82,6 +80,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.jackson.JacksonConverterFactory
+import java.io.File
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -376,7 +375,10 @@ class RepositoryModule {
   @Singleton
   @Provides
   fun providesNftRepository(
+    context: Context,
     @Named("default") client: OkHttpClient,
+    defaultNftNetworkInfo: NftNetworkInfo,
+    nonceObtainer: MultiWalletNonceObtainer,
     gson: Gson
   ): NftRepository {
     val retrofit = Retrofit.Builder()
@@ -386,7 +388,9 @@ class RepositoryModule {
       .client(client)
       .build()
     val api = retrofit.create(NftApi::class.java)
-    return NftRepository(api)
+    val file = File(context.filesDir, "keystore/keystore")
+    val keyStore = KeyStoreFileManager(file.absolutePath, ObjectMapper())
+    return NftRepository(api, keyStore, defaultNftNetworkInfo, nonceObtainer)
 
   }
 

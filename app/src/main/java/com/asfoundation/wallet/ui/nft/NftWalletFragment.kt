@@ -18,7 +18,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_nft.*
-import kotlinx.android.synthetic.main.nft_layout.view.*
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -112,7 +111,7 @@ class NftWalletFragment : BasePageViewFragment(), NftWalletView {
   }
 
   override fun showNftDetails(view: View, asset: NftAsset) {
-    activityView?.showNftDetailsScreen(view.nft_image, view.nft_title, view, asset)
+    activityView?.showNftDetailsScreen(view, asset)
   }
 
   private fun setAlpha(view: View, alphaPercentage: Float) {

@@ -16,8 +16,6 @@ interface BalanceActivityView {
   )
 
   fun showNftDetailsScreen(
-    imgView: ImageView,
-    textView: TextView,
     parentView: View,
     asset: NftAsset
   )

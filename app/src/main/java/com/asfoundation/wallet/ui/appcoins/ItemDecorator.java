@@ -1,8 +1,8 @@
 package com.asfoundation.wallet.ui.appcoins;
 
 import android.graphics.Rect;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class ItemDecorator extends RecyclerView.ItemDecoration {
   private final int spaceInDp;

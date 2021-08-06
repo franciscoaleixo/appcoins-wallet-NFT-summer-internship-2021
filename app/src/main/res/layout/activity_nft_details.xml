@@ -70,6 +70,22 @@
         />
 
     <Button
+        android:id="@+id/transact_btn"
+        style="@style/ButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginTop="21dp"
+        android:minWidth="104dp"
+        android:text="@string/button_transact"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/close_btn"
+        app:layout_constraintHorizontal_bias="0.903"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/token_description"
+        app:layout_constraintVertical_bias="0.058"
+        />
+    <Button
         android:id="@+id/close_btn"
         style="@style/ButtonStyle"
         android:layout_width="wrap_content"

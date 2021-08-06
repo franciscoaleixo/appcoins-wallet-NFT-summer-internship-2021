@@ -610,8 +610,9 @@ class InteractorModule {
   @Provides
   fun providesNftInteractor(
     walletService: WalletService,
-    nftRepository: NftRepository
+    nftRepository: NftRepository,
+    passwordStore: PasswordStore
   ): NftInteractor {
-    return NftInteractor(walletService as AccountWalletService, nftRepository, Schedulers.io())
+    return NftInteractor(walletService as AccountWalletService, nftRepository, passwordStore)
   }
 }

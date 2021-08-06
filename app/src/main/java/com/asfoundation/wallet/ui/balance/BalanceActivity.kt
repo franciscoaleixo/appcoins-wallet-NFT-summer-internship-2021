@@ -20,11 +20,12 @@ import com.asfoundation.wallet.nfts.domain.NftAsset
 import com.asfoundation.wallet.restore.RestoreWalletActivity
 import com.asfoundation.wallet.router.TransactionsRouter
 import com.asfoundation.wallet.ui.backup.BackupActivity.Companion.newIntent
-import com.asfoundation.wallet.ui.nft.NftDetailsActivity
+import com.asfoundation.wallet.ui.nft.details.NftDetailsActivity
 import com.asfoundation.wallet.ui.wallets.RemoveWalletActivity
 import com.asfoundation.wallet.ui.wallets.WalletDetailsFragment
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_balance.*
+import kotlinx.android.synthetic.main.nft_layout.view.*
 import kotlinx.android.synthetic.main.remove_wallet_activity_layout.*
 
 
@@ -93,20 +94,22 @@ class BalanceActivity : ActivityNavigator(), BalanceActivityView {
   }
 
   override fun showNftDetailsScreen(
-    imgView: ImageView,
-    textView: TextView,
     parentView: View,
     asset: NftAsset
   ) {
-    val description =
-      if (asset.description == null) "This NFT doesn't have a description" else asset.description
     val intent =
-      NftDetailsActivity.newInstance(this, asset.name, description, asset.image_preview_url)
+      NftDetailsActivity.newInstance(this, asset)
 
     val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
       this,
-      androidx.core.util.Pair(imgView, ViewCompat.getTransitionName(imgView)!!),
-      androidx.core.util.Pair(textView, ViewCompat.getTransitionName(textView)!!),
+      androidx.core.util.Pair(
+        parentView.nft_image,
+        ViewCompat.getTransitionName(parentView.nft_image)!!
+      ),
+      androidx.core.util.Pair(
+        parentView.nft_title,
+        ViewCompat.getTransitionName(parentView.nft_title)!!
+      ),
       androidx.core.util.Pair(
         parentView,
         ViewCompat.getTransitionName(parentView)!!

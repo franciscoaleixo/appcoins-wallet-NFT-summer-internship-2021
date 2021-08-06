@@ -58,6 +58,7 @@ import com.asfoundation.wallet.logging.DebugReceiver
 import com.asfoundation.wallet.logging.LogReceiver
 import com.asfoundation.wallet.logging.Logger
 import com.asfoundation.wallet.logging.WalletLogger
+import com.asfoundation.wallet.nfts.NftNetworkInfo
 import com.asfoundation.wallet.permissions.repository.PermissionRepository
 import com.asfoundation.wallet.permissions.repository.PermissionsDatabase
 import com.asfoundation.wallet.poa.*
@@ -504,8 +505,8 @@ internal class AppModule {
     return if (BuildConfig.DEBUG) {
       NetworkInfo(
         C.ROPSTEN_NETWORK_NAME, C.ETH_SYMBOL,
-        "https://ropsten.infura.io/v3/${BuildConfig.INFURA_API_KEY_ROPSTEN}",
-        "https://ropsten.trustwalletapp.com/", "https://ropsten.etherscan.io/tx/", 3, false
+        "https://rinkeby.infura.io/v3/${BuildConfig.INFURA_API_KEY_ROPSTEN}",
+        "https://rinkeby.trustwalletapp.com/", "https://rinkeby.etherscan.io/tx/", 3, false
       )
     } else {
       NetworkInfo(
@@ -518,15 +519,15 @@ internal class AppModule {
 
   @Singleton
   @Provides
-  fun providesDefaultNFTNetwork(): NetworkInfo {
+  fun providesDefaultNFTNetwork(): NftNetworkInfo {
     return if (BuildConfig.DEBUG) {
-      NetworkInfo(
+      NftNetworkInfo(
         C.RINKEBY_NETWORK_NAME, C.ETH_SYMBOL,
         "https://rinkeby.infura.io/v3/${BuildConfig.INFURA_API_KEY_RINKEBY}",
         "https://rinkeby.trustwalletapp.com/", "https://rinkeby.etherscan.io/tx/", 4, false
       )
     } else {
-      NetworkInfo(
+      NftNetworkInfo(
         C.ETHEREUM_NETWORK_NAME, C.ETH_SYMBOL,
         "https://mainnet.infura.io/v3/${BuildConfig.INFURA_API_KEY_MAIN}",
         "https://api.trustwalletapp.com/", "https://etherscan.io/tx/", 1, true

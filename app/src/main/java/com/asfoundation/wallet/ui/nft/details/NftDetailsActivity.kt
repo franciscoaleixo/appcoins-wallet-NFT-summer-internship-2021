@@ -1,4 +1,4 @@
-package com.asfoundation.wallet.ui.nft
+package com.asfoundation.wallet.ui.nft.details
 
 import android.content.Context
 import android.content.Intent
@@ -8,21 +8,26 @@ import android.view.View
 import android.view.Window
 import com.asf.wallet.R
 import com.asfoundation.wallet.GlideApp
+import com.asfoundation.wallet.nfts.domain.NftAsset
 import com.asfoundation.wallet.ui.BaseActivity
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.jakewharton.rxbinding2.view.RxView
+import dagger.android.AndroidInjection
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.activity_nft_details.*
 import kotlinx.android.synthetic.main.activity_token_details.*
+import kotlinx.android.synthetic.main.activity_token_details.close_btn
+import kotlinx.android.synthetic.main.activity_token_details.token_description
+import kotlinx.android.synthetic.main.activity_token_details.token_icon
+import kotlinx.android.synthetic.main.activity_token_details.token_name
+import javax.inject.Inject
 
 
-class NftDetailsActivity : BaseActivity(), NftDetailsView {
+class NftDetailsActivity() : BaseActivity(), NftDetailsView {
 
   private var contentVisible = false
-  private lateinit var presenter: NftDetailsPresenter
-  private lateinit var nftName: String
-  private lateinit var nftDescription: String
-  private lateinit var nftUrl: String
+  @Inject
+  lateinit var presenter: NftDetailsPresenter
 
   override fun onResume() {
     super.onResume()
@@ -34,23 +39,19 @@ class NftDetailsActivity : BaseActivity(), NftDetailsView {
     @JvmStatic
     fun newInstance(
       context: Context,
-      nftName: String,
-      nftDescription: String,
-      nftUrl: String
+      asset: NftAsset
     ): Intent {
       val intent = Intent(context, NftDetailsActivity::class.java)
-      intent.putExtra("Name", nftName)
-      intent.putExtra("Description", nftDescription)
-      intent.putExtra("Url", nftUrl)
+      intent.putExtra("Asset", asset)
       return intent
     }
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    AndroidInjection.inject(this)
     super.onCreate(savedInstanceState)
     window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
     setContentView(R.layout.activity_nft_details)
-    presenter = NftDetailsPresenter(this, CompositeDisposable())
     savedInstanceState?.let {
       contentVisible = it.getBoolean("visible")
     }
@@ -81,21 +82,16 @@ class NftDetailsActivity : BaseActivity(), NftDetailsView {
   override fun onBackPressed() {
     token_description.visibility = View.INVISIBLE
     close_btn.visibility = View.INVISIBLE
+    transact_btn.visibility = View.INVISIBLE
     super.onBackPressed()
   }
 
-  override fun setupUi() {
-    intent.extras?.let {
-      if (it.containsKey(
-          "Name"
-        ) && it.containsKey("Description") && it.containsKey("Url")
-      ) {
-        nftName = it.getSerializable("Name") as String
-        nftDescription = it.getSerializable("Description") as String
-        nftUrl = it.getSerializable("Url") as String
-        setContent(nftName, nftDescription, nftUrl)
-      }
-    }
+  override fun setupUi(nftAsset: NftAsset) {
+    setContent(
+      nftAsset.name,
+      if (nftAsset.description == null) "This NFT doesn't have a description" else nftAsset.description,
+      nftAsset.image_preview_url
+    )
 
     val sharedElementEnterTransition = window.sharedElementEnterTransition
     sharedElementEnterTransition.addListener(object : Transition.TransitionListener {
@@ -106,6 +102,7 @@ class NftDetailsActivity : BaseActivity(), NftDetailsView {
         if (!contentVisible) {
           token_description.visibility = View.VISIBLE
           close_btn.visibility = View.VISIBLE
+          transact_btn.visibility = View.VISIBLE
           contentVisible = true
         }
       }
@@ -124,11 +121,16 @@ class NftDetailsActivity : BaseActivity(), NftDetailsView {
       token_symbol.visibility = View.VISIBLE
       token_description.visibility = View.VISIBLE
       close_btn.visibility = View.VISIBLE
+      transact_btn.visibility = View.VISIBLE
     }
   }
 
   override fun getOkClick(): Observable<Any> {
     return RxView.clicks(close_btn)
+  }
+
+  override fun getTransactClick(): Observable<Any> {
+    return RxView.clicks(transact_btn)
   }
 
   override fun close() {

@@ -149,6 +149,7 @@
   <string name="label_gas_price">Gas Price</string>
   <string name="label_network_fee">Network Fee</string>
   <string name="button_ok">OK</string>
+  <string name="button_transact">Transaction</string>
   <string name="hint_recipient_address">Recipient Address</string>
   <string name="hint_amount">Amount</string>
   <string name="hint_amount_with_token">Amount %s</string>

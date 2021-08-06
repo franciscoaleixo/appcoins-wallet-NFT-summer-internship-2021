@@ -15,6 +15,8 @@ import com.asfoundation.wallet.ui.balance.TokenDetailsActivity
 import com.asfoundation.wallet.ui.balance.TransactionDetailActivity
 import com.asfoundation.wallet.ui.iab.IabActivity
 import com.asfoundation.wallet.ui.iab.WebViewActivity
+import com.asfoundation.wallet.ui.nft.details.NftDetailsActivity
+import com.asfoundation.wallet.ui.nft.details.NftDetailsModule
 import com.asfoundation.wallet.ui.onboarding.OnboardingActivity
 import com.asfoundation.wallet.ui.onboarding.OnboardingModule
 import com.asfoundation.wallet.ui.settings.SettingsActivity
@@ -130,4 +132,8 @@ abstract class ActivityBuilders {
   @ActivityScope
   @ContributesAndroidInjector(modules = [VerificationActivityModule::class])
   internal abstract fun bindVerificationActivity(): VerificationActivity
+
+  @ActivityScope
+  @ContributesAndroidInjector(modules = [NftDetailsModule::class])
+  internal abstract fun bindNftDetailsActivity(): NftDetailsActivity
 }
