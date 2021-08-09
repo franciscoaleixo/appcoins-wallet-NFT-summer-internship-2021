@@ -1,5 +1,7 @@
 package com.asfoundation.wallet.nfts
 
+import android.util.Log
+import com.asfoundation.wallet.interact.FetchGasSettingsInteract
 import com.asfoundation.wallet.nfts.domain.NftAsset
 import com.asfoundation.wallet.nfts.repository.NftRepository
 import com.asfoundation.wallet.repository.PasswordStore
@@ -12,6 +14,7 @@ class NftInteractor(
   private val accountWalletService: AccountWalletService,
   private val nftRepository: NftRepository,
   private val passwordStore: PasswordStore,
+  private val fetchGasSettingsInteract: FetchGasSettingsInteract
 ) {
   fun getNFTCount(): Single<Int> {
     return accountWalletService.find()
@@ -28,17 +31,25 @@ class NftInteractor(
       .flatMap { wallet ->
         passwordStore.getPassword(wallet.address)
           .flatMap { password ->
-            nftRepository.createAndSendTransactionSingle(
-              wallet.address,
-              password,
-              BigDecimal(100000000000000L),
-              BigDecimal(100000L),
-              to,
-              BigDecimal(asset.token_id),
-              asset.contract_address
-            )
+            fetchGasSettingsInteract.fetch(true)
+              .observeOn(Schedulers.io())
+              .flatMap { gasSettings ->
+                nftRepository.createAndSendTransactionSingle(
+                  wallet.address,
+                  password,
+                  gasSettings.gasPrice,
+                  gasSettings.gasLimit,
+                  to,
+                  BigDecimal(asset.token_id),
+                  asset.contract_address
+                )
+              }
           }
+      }.doOnError { err ->
+        Log.d("NFT", err.message)
       }.subscribeOn(Schedulers.io())
+
+
   }
 
 /*

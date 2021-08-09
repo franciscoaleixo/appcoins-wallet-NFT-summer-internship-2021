@@ -54,7 +54,7 @@ class NftRepository(
   fun createNftTransferData(from: String, to: String, tokenID: BigDecimal): ByteArray {
     val params: List<Type<*>> = listOf(Address(from), Address(to), Uint256(tokenID.toBigInteger()))
     val returnTypes: List<TypeReference<*>> = listOf(object : TypeReference<Bool?>() {})
-    val function = Function("transfer", params, returnTypes)
+    val function = Function("transferFrom", params, returnTypes)
     val encodedFunction = FunctionEncoder.encode(function)
     return Numeric.hexStringToByteArray(Numeric.cleanHexPrefix(encodedFunction))
   }

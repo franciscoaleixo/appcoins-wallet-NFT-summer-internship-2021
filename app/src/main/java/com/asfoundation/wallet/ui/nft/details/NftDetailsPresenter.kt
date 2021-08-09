@@ -35,16 +35,14 @@ class NftDetailsPresenter(
         //.doOnNext{view.showLoading}
         .flatMapSingle {
           nftInteractor.sendNFT(
-            "0xc848A5560bCd8ef88C4C26b3e53D2096eAB1b053",
+            "0x62317826Eb67852DbFB4770a5fF9218ccA7B712D",
             data.asset
           )
-        }
-        .observeOn(AndroidSchedulers.mainThread())
+        }.observeOn(AndroidSchedulers.mainThread())
         //.doOnNext{MOSTRAR FEEDBACK}
         .doOnError { err ->
-          Log.d("erro", err.message)
-        }
-        .subscribe()
+          Log.d("NFT", err.message)
+        }.subscribe({}, { it.printStackTrace() })
     )
   }
 }

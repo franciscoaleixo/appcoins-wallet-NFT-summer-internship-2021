@@ -611,8 +611,14 @@ class InteractorModule {
   fun providesNftInteractor(
     walletService: WalletService,
     nftRepository: NftRepository,
-    passwordStore: PasswordStore
+    passwordStore: PasswordStore,
+    gasSettingsRepository: GasSettingsRepositoryType
   ): NftInteractor {
-    return NftInteractor(walletService as AccountWalletService, nftRepository, passwordStore)
+    return NftInteractor(
+      walletService as AccountWalletService, nftRepository, passwordStore, FetchGasSettingsInteract(
+        gasSettingsRepository, Schedulers.io(),
+        AndroidSchedulers.mainThread()
+      )
+    )
   }
 }
