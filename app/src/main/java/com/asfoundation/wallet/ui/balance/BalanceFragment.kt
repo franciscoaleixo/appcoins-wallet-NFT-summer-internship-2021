@@ -16,7 +16,7 @@ import com.asf.wallet.R
 import com.asfoundation.wallet.billing.analytics.WalletsEventSender
 import com.asfoundation.wallet.nfts.NftInteractor
 import com.asfoundation.wallet.ui.MyAddressActivity
-import com.asfoundation.wallet.ui.nft.NftWalletFragment
+import com.asfoundation.wallet.ui.nft.wallet.NftWalletFragment
 import com.asfoundation.wallet.ui.wallets.WalletsFragment
 import com.asfoundation.wallet.util.CurrencyFormatUtils
 import com.asfoundation.wallet.util.WalletCurrency

@@ -1,4 +1,4 @@
-package com.asfoundation.wallet.ui.nft
+package com.asfoundation.wallet.ui.nft.wallet
 
 import com.asfoundation.wallet.nfts.NftInteractor
 import io.reactivex.Scheduler

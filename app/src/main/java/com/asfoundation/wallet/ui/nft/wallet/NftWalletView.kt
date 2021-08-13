@@ -1,4 +1,4 @@
-package com.asfoundation.wallet.ui.nft
+package com.asfoundation.wallet.ui.nft.wallet
 
 import android.view.View
 import com.asfoundation.wallet.nfts.domain.NftAsset

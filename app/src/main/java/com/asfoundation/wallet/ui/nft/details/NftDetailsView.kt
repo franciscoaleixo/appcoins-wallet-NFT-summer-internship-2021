@@ -12,4 +12,6 @@ public interface NftDetailsView {
   fun close()
 
   fun setupUi(nftAsset: NftAsset)
+
+  fun onTransferClicked()
 }

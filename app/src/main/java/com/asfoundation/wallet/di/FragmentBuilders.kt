@@ -56,7 +56,10 @@ import com.asfoundation.wallet.ui.iab.payments.carrier.verify.CarrierVerifyModul
 import com.asfoundation.wallet.ui.iab.payments.common.error.IabErrorFragment
 import com.asfoundation.wallet.ui.iab.payments.common.error.IabErrorModule
 import com.asfoundation.wallet.ui.iab.share.SharePaymentLinkFragment
-import com.asfoundation.wallet.ui.nft.NftWalletFragment
+import com.asfoundation.wallet.ui.nft.details.NftDetailsFragment
+import com.asfoundation.wallet.ui.nft.details.NftDetailsModule
+import com.asfoundation.wallet.ui.nft.transfer.NftWalletTransferFragment
+import com.asfoundation.wallet.ui.nft.wallet.NftWalletFragment
 import com.asfoundation.wallet.ui.overlay.OverlayFragment
 import com.asfoundation.wallet.ui.overlay.OverlayModule
 import com.asfoundation.wallet.ui.settings.entry.SettingsFragment
@@ -291,4 +294,12 @@ abstract class FragmentBuilders {
   @FragmentScope
   @ContributesAndroidInjector
   abstract fun bindWithdrawFragment(): WithdrawFragment
+
+  @FragmentScope
+  @ContributesAndroidInjector(modules = [NftDetailsModule::class])
+  internal abstract fun bindNftDetailsFragment(): NftDetailsFragment
+
+  @FragmentScope
+  @ContributesAndroidInjector
+  internal abstract fun bindNftWalletTransferFragment(): NftWalletTransferFragment
 }

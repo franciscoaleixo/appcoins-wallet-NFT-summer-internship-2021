@@ -1,16 +1,18 @@
-package com.asfoundation.wallet.ui.nft
+package com.asfoundation.wallet.ui.nft.wallet
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.lottie.LottieAnimationView
 import com.asf.wallet.R
 import com.asfoundation.wallet.nfts.NftInteractor
 import com.asfoundation.wallet.nfts.domain.NftAsset
 import com.asfoundation.wallet.ui.balance.BalanceActivityView
+import com.asfoundation.wallet.ui.nft.details.NftDetailsFragment
 import com.asfoundation.wallet.viewmodel.BasePageViewFragment
 import com.google.android.material.appbar.AppBarLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,6 +20,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_nft.*
+import kotlinx.android.synthetic.main.nft_layout.view.*
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -95,7 +98,9 @@ class NftWalletFragment : BasePageViewFragment(), NftWalletView {
     adapter = NftWalletAdapter(nftClickListener)
     recicleView.adapter = adapter
     recicleView.layoutManager = LinearLayoutManager(context)
-    activityView?.setupToolbar()
+
+    activityView?.setupToolbar(R.string.nftMyWallet)
+
     presenter.present()
 
     (app_bar as AppBarLayout).addOnOffsetChangedListener(
@@ -111,7 +116,14 @@ class NftWalletFragment : BasePageViewFragment(), NftWalletView {
   }
 
   override fun showNftDetails(view: View, asset: NftAsset) {
-    activityView?.showNftDetailsScreen(view, asset)
+    fragmentManager!!.beginTransaction()
+      .setReorderingAllowed(true)
+      .addSharedElement(view.nft_image, ViewCompat.getTransitionName(view.nft_image)!!)
+      .addSharedElement(view.nft_title, ViewCompat.getTransitionName(view.nft_title)!!)
+      .addSharedElement(view, ViewCompat.getTransitionName(view)!!)
+      .add(R.id.fragment_container, NftDetailsFragment.newInstance(asset))
+      .addToBackStack(null)
+      .commit()
   }
 
   private fun setAlpha(view: View, alphaPercentage: Float) {

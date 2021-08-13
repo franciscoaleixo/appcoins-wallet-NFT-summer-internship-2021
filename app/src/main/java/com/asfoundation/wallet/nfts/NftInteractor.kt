@@ -51,14 +51,4 @@ class NftInteractor(
 
 
   }
-
-/*
-    private fun getStoredNFTCount(walletAddress: String?): Single<Integer> {
-        return (walletAddress?.let { Single.just(it) } ?: accountWalletService.find()
-            .map { it.address })
-            .subscribeOn(networkScheduler)
-            .flatMap { nftRepository.getStoredNFTCount(it) }
-    }
-
- */
 }

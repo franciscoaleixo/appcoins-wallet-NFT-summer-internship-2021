@@ -4,9 +4,13 @@
   <string name="title_send_with_token">Send %s</string>
   <string name="title_request">Receive</string>
   <string name="title_import">Recover Wallet</string>
-  
+
   <!--Bottom navigation-->
   <string name="bottom_navigation_my_wallets">My Wallets</string>
+
+  <!--NFT-->
+  <string name="nftMyWallet" translatable="false">NFT Wallet</string>
+  <string name="nftTransfer" translatable="false">NFT Transaction</string>
 
   <!-- Strings relatedwalletount creation -->
   <string name="prompt_password">Password</string>

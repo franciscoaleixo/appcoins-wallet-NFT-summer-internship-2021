@@ -3,7 +3,7 @@ package com.asfoundation.wallet.ui.balance
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.asfoundation.wallet.nfts.domain.NftAsset
+import com.asf.wallet.R
 import io.reactivex.Observable
 
 interface BalanceActivityView {
@@ -15,12 +15,7 @@ interface BalanceActivityView {
     imgView: ImageView, textView: TextView, parentView: View
   )
 
-  fun showNftDetailsScreen(
-    parentView: View,
-    asset: NftAsset
-  )
-
-  fun setupToolbar()
+  fun setupToolbar(titleId: Int = R.string.bottom_navigation_my_wallets)
 
   fun navigateToWalletDetailView(walletAddress: String, isActive: Boolean)
 

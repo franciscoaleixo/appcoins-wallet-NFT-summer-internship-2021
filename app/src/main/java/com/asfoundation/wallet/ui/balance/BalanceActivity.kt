@@ -16,16 +16,13 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
 import com.asf.wallet.R
 import com.asfoundation.wallet.navigator.ActivityNavigator
-import com.asfoundation.wallet.nfts.domain.NftAsset
 import com.asfoundation.wallet.restore.RestoreWalletActivity
 import com.asfoundation.wallet.router.TransactionsRouter
 import com.asfoundation.wallet.ui.backup.BackupActivity.Companion.newIntent
-import com.asfoundation.wallet.ui.nft.details.NftDetailsActivity
 import com.asfoundation.wallet.ui.wallets.RemoveWalletActivity
 import com.asfoundation.wallet.ui.wallets.WalletDetailsFragment
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_balance.*
-import kotlinx.android.synthetic.main.nft_layout.view.*
 import kotlinx.android.synthetic.main.remove_wallet_activity_layout.*
 
 
@@ -93,32 +90,6 @@ class BalanceActivity : ActivityNavigator(), BalanceActivityView {
 
   }
 
-  override fun showNftDetailsScreen(
-    parentView: View,
-    asset: NftAsset
-  ) {
-    val intent =
-      NftDetailsActivity.newInstance(this, asset)
-
-    val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-      this,
-      androidx.core.util.Pair(
-        parentView.nft_image,
-        ViewCompat.getTransitionName(parentView.nft_image)!!
-      ),
-      androidx.core.util.Pair(
-        parentView.nft_title,
-        ViewCompat.getTransitionName(parentView.nft_title)!!
-      ),
-      androidx.core.util.Pair(
-        parentView,
-        ViewCompat.getTransitionName(parentView)!!
-      )
-    )
-
-    startActivity(intent, options.toBundle())
-  }
-
   override fun navigateToWalletDetailView(walletAddress: String, isActive: Boolean) {
     expandBottomSheet = true
     supportFragmentManager.beginTransaction()
@@ -171,9 +142,9 @@ class BalanceActivity : ActivityNavigator(), BalanceActivityView {
     return shouldExpand
   }
 
-  override fun setupToolbar() {
+  override fun setupToolbar(titleId: Int) {
     toolbar()
-    setTitle(getString(R.string.bottom_navigation_my_wallets))
+    setTitle(getString(titleId))
   }
 
   override fun enableBack() {
