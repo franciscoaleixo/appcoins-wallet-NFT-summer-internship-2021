@@ -108,7 +108,6 @@ class NftDetailsFragment(private val asset: NftAsset) : BasePageViewFragment(), 
 
   override fun onTransferClicked() {
     fragmentManager!!.beginTransaction()
-      .setReorderingAllowed(true)
       .replace(R.id.fragment_container, NftWalletTransferFragment.newInstance(asset))
       .addToBackStack(null)
       .commit()
