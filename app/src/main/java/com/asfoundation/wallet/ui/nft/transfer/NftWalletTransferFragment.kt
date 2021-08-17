@@ -117,11 +117,14 @@ class NftWalletTransferFragment(private val asset: NftAsset) : BasePageViewFragm
   }
 
   override fun showLoading() {
-    TODO("Not yet implemented")
+    /*
+    loading.visibility = View.VISIBLE
+    send_button.isEnabled = false
+    */
   }
 
   override fun showInvalidAddressError() {
-    TODO("Not yet implemented")
+
   }
 
 }

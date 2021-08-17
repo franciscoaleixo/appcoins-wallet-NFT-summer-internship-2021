@@ -390,7 +390,7 @@ class RepositoryModule {
     val api = retrofit.create(NftApi::class.java)
     val file = File(context.filesDir, "keystore/keystore")
     val keyStore = KeyStoreFileManager(file.absolutePath, ObjectMapper())
-    return NftRepository(api, keyStore, defaultNftNetworkInfo, nonceObtainer)
+    return NftRepository(api, keyStore, defaultNftNetworkInfo)
 
   }
 

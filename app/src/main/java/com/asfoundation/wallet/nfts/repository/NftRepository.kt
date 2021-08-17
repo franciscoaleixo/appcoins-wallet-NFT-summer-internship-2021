@@ -5,7 +5,6 @@ import com.asfoundation.wallet.nfts.NftNetworkInfo
 import com.asfoundation.wallet.nfts.domain.NftAsset
 import com.asfoundation.wallet.nfts.repository.api.NftApi
 import com.asfoundation.wallet.service.KeyStoreFileManager
-import com.asfoundation.wallet.ui.iab.raiden.MultiWalletNonceObtainer
 import io.reactivex.Single
 import org.spongycastle.util.encoders.Hex
 import org.web3j.abi.FunctionEncoder
@@ -20,16 +19,18 @@ import org.web3j.crypto.RawTransaction
 import org.web3j.crypto.TransactionEncoder
 import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.Web3jFactory
+import org.web3j.protocol.core.DefaultBlockParameterName
+import org.web3j.protocol.core.methods.request.Transaction
 import org.web3j.protocol.http.HttpService
 import org.web3j.utils.Numeric
 import java.math.BigDecimal
 import java.math.BigInteger
 
+
 class NftRepository(
   private val nftApi: NftApi,
   private val keyStoreFileManager: KeyStoreFileManager,
   private val defaultNFTNetwork: NftNetworkInfo,
-  private val nonceObtainer: MultiWalletNonceObtainer,
 ) {
   fun getNFTCount(address: String): Single<Int> {
     return nftApi.getNFTsOfWallet(address).map { response -> response.assets.size }
@@ -51,19 +52,15 @@ class NftRepository(
     }
   }
 
-  fun createNftTransferData(from: String, to: String, tokenID: BigDecimal): ByteArray {
+  fun createNftTransferData(
+    from: String,
+    to: String,
+    tokenID: BigDecimal,
+    functionName: String = "transferFrom"
+  ): ByteArray {
     val params: List<Type<*>> = listOf(Address(from), Address(to), Uint256(tokenID.toBigInteger()))
     val returnTypes: List<TypeReference<*>> = listOf(object : TypeReference<Bool?>() {})
-    val function = Function("transferFrom", params, returnTypes)
-    val encodedFunction = FunctionEncoder.encode(function)
-    return Numeric.hexStringToByteArray(Numeric.cleanHexPrefix(encodedFunction))
-  }
-
-  fun createNftApproveData(owner: String, approved: String, tokenID: BigDecimal): ByteArray {
-    val params: List<Type<*>> =
-      listOf(Address(owner), Address(approved), Uint256(tokenID.toBigInteger()))
-    val returnTypes: List<TypeReference<*>> = listOf(object : TypeReference<Bool?>() {})
-    val function = Function("approve", params, returnTypes)
+    val function = Function("functionName", params, returnTypes)
     val encodedFunction = FunctionEncoder.encode(function)
     return Numeric.hexStringToByteArray(Numeric.cleanHexPrefix(encodedFunction))
   }
@@ -71,40 +68,50 @@ class NftRepository(
   fun createAndSendTransactionSingle(
     fromAddress: String,
     signerPassword: String,
-    gasPrice: BigDecimal,
-    gasLimit: BigDecimal,
     toAddress: String,
     tokenID: BigDecimal,
     contractAddress: String
   ): Single<String> {
     return Single.just(
       createAndSendTransaction(
-        fromAddress, signerPassword, gasPrice, gasLimit, toAddress,
+        fromAddress, signerPassword, toAddress,
         tokenID, contractAddress
       )
     )
   }
 
-  fun createAndSendTransaction(
+  private fun createAndSendTransaction(
     fromAddress: String,
     signerPassword: String,
-    gasPrice: BigDecimal,
-    gasLimit: BigDecimal,
     toAddress: String,
     tokenID: BigDecimal,
     contractAddress: String
   ): String {
     val data = createNftTransferData(fromAddress, toAddress, tokenID)
     val web3j = Web3jFactory.build(HttpService(defaultNFTNetwork.rpcServerUrl))
-    val nonce: BigInteger = nonceObtainer.getNonce(Address(fromAddress), 4)
-/*
-    val transaction = Transaction.createFunctionCallTransaction(fromAddress, nonce,gasPrice.toBigInteger() , gasLimit.toBigInteger() ,toAddress ,Hex.toHexString(data))
-    val raw = web3j.ethSendTransaction(transaction).sendAsync().get();
-    */
+    val ethGetTransactionCount = web3j.ethGetTransactionCount(
+      fromAddress, DefaultBlockParameterName.LATEST
+    ).sendAsync().get()
+
+    val nonce = ethGetTransactionCount.transactionCount
+    val gasPrice = web3j.ethGasPrice().send().gasPrice
+    var calculateGasTransaction = Transaction(
+      fromAddress,
+      nonce,
+      gasPrice,
+      BigDecimal(144000).toBigInteger(),
+      contractAddress,
+      BigInteger.ZERO,
+      Hex.toHexString(data)
+    )
+    val gasLimit = web3j.ethEstimateGas(calculateGasTransaction).send().amountUsed
+
+    Log.d("NFT", "GasPrice: $gasPrice   GasLimit: $gasLimit   Nonce: $nonce")
+
     val transaction: RawTransaction = RawTransaction.createTransaction(
       nonce,
-      gasPrice.toBigInteger(),
-      gasLimit.toBigInteger(),
+      gasPrice,
+      gasLimit,
       contractAddress,
       Hex.toHexString(data)
     )

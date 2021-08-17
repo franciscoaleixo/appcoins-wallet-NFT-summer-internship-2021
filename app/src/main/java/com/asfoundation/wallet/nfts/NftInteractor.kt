@@ -31,19 +31,13 @@ class NftInteractor(
       .flatMap { wallet ->
         passwordStore.getPassword(wallet.address)
           .flatMap { password ->
-            fetchGasSettingsInteract.fetch(true)
-              .observeOn(Schedulers.io())
-              .flatMap { gasSettings ->
-                nftRepository.createAndSendTransactionSingle(
-                  wallet.address,
-                  password,
-                  gasSettings.gasPrice,
-                  gasSettings.gasLimit,
-                  to,
-                  BigDecimal(asset.token_id),
-                  asset.contract_address
-                )
-              }
+            nftRepository.createAndSendTransactionSingle(
+              wallet.address,
+              password,
+              to,
+              BigDecimal(asset.token_id),
+              asset.contract_address
+            )
           }
       }.doOnError { err ->
         Log.d("NFT", err.message)
