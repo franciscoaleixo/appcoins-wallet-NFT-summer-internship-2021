@@ -5,7 +5,9 @@ import com.asfoundation.wallet.nfts.NftNetworkInfo
 import com.asfoundation.wallet.nfts.domain.NftAsset
 import com.asfoundation.wallet.nfts.repository.api.NftApi
 import com.asfoundation.wallet.service.KeyStoreFileManager
+import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import org.spongycastle.util.encoders.Hex
 import org.web3j.abi.FunctionEncoder
 import org.web3j.abi.TypeReference
@@ -25,6 +27,7 @@ import org.web3j.protocol.http.HttpService
 import org.web3j.utils.Numeric
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.util.concurrent.TimeUnit
 
 
 class NftRepository(
@@ -47,9 +50,48 @@ class NftRepository(
           assetResponse.description,
           assetResponse.asset_contract.address,
           assetResponse.asset_contract.schema_name,
+          checkOwnership(
+            address,
+            assetResponse.asset_contract.address,
+            BigDecimal(assetResponse.token_id),
+            assetResponse.asset_contract.schema_name
+          )
         )
       }
     }
+  }
+
+  fun checkOwnership(
+    fromAddress: String,
+    contractAddress: String,
+    tokenId: BigDecimal,
+    schema: String
+  ): Boolean {
+
+    val web3j = Web3jFactory.build(HttpService(defaultNFTNetwork.rpcServerUrl))
+    if (schema == "ERC721") {
+      val response = web3j.ethCall(
+        Transaction.createEthCallTransaction(
+          fromAddress,
+          contractAddress,
+          Hex.toHexString(createNftOwnerData(tokenId))
+        ),
+        DefaultBlockParameterName.LATEST
+      ).send()
+      return fromAddress == response.result.removeRange(IntRange(2, 25))
+    } else {
+      Log.d("NFT", schema)
+    }
+
+    return true
+  }
+
+  fun createNftOwnerData(tokenID: BigDecimal): ByteArray {
+    val params: List<Type<*>> = listOf(Uint256(tokenID.toBigInteger()))
+    val returnTypes: List<TypeReference<*>> = listOf(object : TypeReference<Bool?>() {})
+    val function = Function("ownerOf", params, returnTypes)
+    val encodedFunction = FunctionEncoder.encode(function)
+    return Numeric.hexStringToByteArray(Numeric.cleanHexPrefix(encodedFunction))
   }
 
   fun createNftTransferData(
@@ -60,7 +102,7 @@ class NftRepository(
   ): ByteArray {
     val params: List<Type<*>> = listOf(Address(from), Address(to), Uint256(tokenID.toBigInteger()))
     val returnTypes: List<TypeReference<*>> = listOf(object : TypeReference<Bool?>() {})
-    val function = Function("functionName", params, returnTypes)
+    val function = Function(functionName, params, returnTypes)
     val encodedFunction = FunctionEncoder.encode(function)
     return Numeric.hexStringToByteArray(Numeric.cleanHexPrefix(encodedFunction))
   }
@@ -80,6 +122,21 @@ class NftRepository(
     )
   }
 
+  fun getTransactionStatus(hash: String): Observable<Boolean> {
+    val web3j = Web3jFactory.build(HttpService(defaultNFTNetwork.rpcServerUrl))
+    return Observable.interval(0, 1, TimeUnit.SECONDS, Schedulers.io())
+      .timeInterval()
+      .switchMap {
+        if (web3j.ethGetTransactionReceipt(hash).send().transactionReceipt == null) {
+          return@switchMap Observable.just(false)
+        }
+        return@switchMap Observable.just(true)
+      }
+      .filter { receipt -> receipt }
+      .distinctUntilChanged { receipt -> receipt }
+  }
+
+
   private fun createAndSendTransaction(
     fromAddress: String,
     signerPassword: String,
@@ -95,16 +152,21 @@ class NftRepository(
 
     val nonce = ethGetTransactionCount.transactionCount
     val gasPrice = web3j.ethGasPrice().send().gasPrice
-    var calculateGasTransaction = Transaction(
+    var gasLimit = BigDecimal(144000).toBigInteger()
+    val calculateGasTransaction = Transaction(
       fromAddress,
       nonce,
       gasPrice,
-      BigDecimal(144000).toBigInteger(),
+      gasLimit,
       contractAddress,
       BigInteger.ZERO,
       Hex.toHexString(data)
     )
-    val gasLimit = web3j.ethEstimateGas(calculateGasTransaction).send().amountUsed
+    val estimatedGas = web3j.ethEstimateGas(calculateGasTransaction).send()
+
+    if (!estimatedGas.hasError()) {
+      gasLimit = estimatedGas.amountUsed
+    }
 
     Log.d("NFT", "GasPrice: $gasPrice   GasLimit: $gasLimit   Nonce: $nonce")
 

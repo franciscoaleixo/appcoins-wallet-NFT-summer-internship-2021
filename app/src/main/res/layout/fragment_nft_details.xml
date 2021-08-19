@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_translucent"
     android:gravity="center"
+    android:clickable="true"
     >
   <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/container"
@@ -20,11 +21,31 @@
       android:transitionName="nftAssetLayout"
       >
 
+    <TextView
+        android:id="@+id/schema"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ERCXXXX"
+        android:textSize="12dp"
+        android:textColor="@drawable/btn_light_text_color"
+        android:background="@drawable/button_light_background"
+        android:transitionName="nftAssetName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingVertical="2dp"
+        android:paddingHorizontal="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintVertical_bias="0"
+        />
     <ImageView
         android:id="@+id/token_icon"
         android:layout_width="164dp"
         android:layout_height="162dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="45dp"
         android:src="@drawable/ic_eth_token"
         android:transitionName="nftAssetImage"
         app:layout_constraintBottom_toTopOf="@id/token_name"

@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.airbnb.lottie.LottieAnimationView
 import com.asf.wallet.R
 import com.asfoundation.wallet.nfts.NftInteractor
@@ -97,7 +97,7 @@ class NftWalletFragment : BasePageViewFragment(), NftWalletView {
     val recicleView = nft_recycler_view
     adapter = NftWalletAdapter(nftClickListener)
     recicleView.adapter = adapter
-    recicleView.layoutManager = LinearLayoutManager(context)
+    recicleView.layoutManager = GridLayoutManager(context, 2)
 
     activityView?.setupToolbar(R.string.nftMyWallet)
 

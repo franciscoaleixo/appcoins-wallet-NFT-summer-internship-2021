@@ -89,7 +89,14 @@ class NftDetailsFragment(private val asset: NftAsset) : BasePageViewFragment(), 
       .into(token_icon)
     token_name.text = nftAsset.name
     close_btn.visibility = View.VISIBLE;
-    transact_btn.visibility = View.VISIBLE;
+    if (!nftAsset.isOwnedByMe || nftAsset.schema_name == "ERC1155") {
+      transact_btn.isEnabled = false
+      transact_btn.visibility = View.INVISIBLE;
+    } else {
+      transact_btn.isEnabled = true
+      transact_btn.visibility = View.VISIBLE;
+    }
+    schema.text = nftAsset.schema_name
     token_description.text = nftAsset.description
     token_description.visibility = View.VISIBLE;
   }

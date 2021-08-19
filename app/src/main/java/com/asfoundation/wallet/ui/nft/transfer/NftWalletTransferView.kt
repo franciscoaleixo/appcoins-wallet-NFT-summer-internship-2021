@@ -7,8 +7,6 @@ interface NftWalletTransferView {
 
   fun getTransferClick(): Observable<String>
 
-  fun validateAddress()
-
   fun setupUI(nftDetailsdata: NftDetailsData)
 
   fun showFeedback(result: String)

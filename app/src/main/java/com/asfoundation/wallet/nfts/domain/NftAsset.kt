@@ -11,4 +11,6 @@ data class NftAsset(
   @SerializedName("description") val description: String?,
   @SerializedName("address") val contract_address: String,
   @SerializedName("schema_name") val schema_name: String,
-) : Serializable
+  @SerializedName("isOwnedByMe") val isOwnedByMe: Boolean,
+
+  ) : Serializable

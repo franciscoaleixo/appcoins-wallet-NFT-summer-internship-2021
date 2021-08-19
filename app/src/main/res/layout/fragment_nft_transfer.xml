@@ -15,10 +15,11 @@
       android:layout_width="0dp"
       android:layout_height="0dp"
       android:background="@drawable/background_card"
+      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/app_bar"
-      app:layout_constraintBottom_toBottomOf="parent"
       >
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -32,6 +33,17 @@
           android:layout_marginBottom="50dp"
           android:indeterminateDrawable="@drawable/gradient_progress"
           android:visibility="gone"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          />
+      <include
+          android:id="@+id/complete_payment_view"
+          layout="@layout/fragment_iab_transaction_completed"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:visibility="invisible"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
@@ -77,20 +89,6 @@
             android:paddingEnd="45dp"
             />
       </com.google.android.material.textfield.TextInputLayout>
-      <ImageButton
-          android:id="@+id/scan_barcode_button"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="?android:attr/selectableItemBackgroundBorderless"
-          android:contentDescription="@string/scan_qr"
-          android:padding="@dimen/big_padding"
-          android:src="@drawable/ic_qr_code"
-          app:layout_constraintBottom_toBottomOf="@+id/transact_fragment_recipient_address_layout"
-          app:layout_constraintEnd_toEndOf="@+id/transact_fragment_recipient_address_layout"
-          app:layout_constraintHorizontal_bias="1"
-          app:layout_constraintStart_toStartOf="@+id/transact_fragment_recipient_address_layout"
-          app:layout_constraintTop_toTopOf="@id/transact_fragment_recipient_address_layout"
-          />
 
       <androidx.constraintlayout.widget.ConstraintLayout
           android:id="@+id/atransact_fragment_recipient_address_layout"

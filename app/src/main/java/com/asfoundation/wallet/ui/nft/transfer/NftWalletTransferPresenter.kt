@@ -36,11 +36,13 @@ class NftWalletTransferPresenter(
         return@map walletAddress
       }.filter { walletAddress ->
         walletAddress.isNotEmpty()
-      }.flatMapSingle { walletAddress ->
+      }.flatMap { walletAddress ->
         nftInteractor.sendNFT(walletAddress, data.asset)
           .observeOn(AndroidSchedulers.mainThread())
-          .doOnSuccess { result ->
-            view.showFeedback(result)
+          .doOnNext { status ->
+            if (status) {
+              view.showFeedback("Transaction Done")
+            }
           }
       }.subscribe({}, { it.printStackTrace() })
     )
