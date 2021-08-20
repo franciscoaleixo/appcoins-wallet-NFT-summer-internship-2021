@@ -1,5 +1,6 @@
 package com.asfoundation.wallet.ui.nft.transfer
 
+import android.animation.Animator
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -101,9 +102,29 @@ class NftWalletTransferFragment(private val asset: NftAsset) : BasePageViewFragm
     complete_payment_view.visibility = View.VISIBLE
     complete_payment_view.lottie_transaction_success.playAnimation()
     complete_payment_view.lottie_transaction_success.visibility = View.VISIBLE
+    complete_payment_view.lottie_transaction_success.addAnimatorListener(object :
+      Animator.AnimatorListener {
+
+      override fun onAnimationStart(p0: Animator?) {
+      }
+
+      override fun onAnimationEnd(p0: Animator?) {
+        fragmentManager!!.popBackStack()
+        fragmentManager!!.popBackStack()
+        activityView?.enableBack()
+      }
+
+      override fun onAnimationCancel(p0: Animator?) {
+      }
+
+      override fun onAnimationRepeat(p0: Animator?) {
+      }
+
+    })
   }
 
   override fun showLoading() {
+    activityView?.disableBack()
     title.visibility = View.INVISIBLE
     transact_fragment_recipient_address_layout.visibility = View.INVISIBLE
     atransact_fragment_recipient_address_layout.visibility = View.INVISIBLE
