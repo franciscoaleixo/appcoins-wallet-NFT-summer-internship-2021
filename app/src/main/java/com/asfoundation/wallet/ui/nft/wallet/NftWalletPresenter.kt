@@ -1,8 +1,10 @@
 package com.asfoundation.wallet.ui.nft.wallet
 
 import com.asfoundation.wallet.nfts.NftInteractor
+import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import java.util.concurrent.TimeUnit
 
 class NftWalletPresenter(
   private val view: NftWalletFragment,
@@ -16,6 +18,11 @@ class NftWalletPresenter(
     view.setupUI()
     requestNftList()
     requestNftData()
+    recurrentUpdateNftList()
+  }
+
+  fun dismiss() {
+    disposables.dispose()
   }
 
   private fun requestNftList() {
@@ -24,6 +31,17 @@ class NftWalletPresenter(
       .observeOn(viewScheduler)
       .doOnSuccess { view.updateNftList(it) }
       .subscribe({}, { it.printStackTrace() })
+    )
+  }
+
+  private fun recurrentUpdateNftList() {
+    disposables.add(
+      Observable.interval(20, TimeUnit.SECONDS)
+        .flatMapSingle { nftInteractor.getNFTAsset() }
+        .subscribeOn(networkScheduler)
+        .observeOn(viewScheduler)
+        .doOnNext { view.updateNftList(it) }
+        .subscribe({}, { it.printStackTrace() })
     )
   }
 

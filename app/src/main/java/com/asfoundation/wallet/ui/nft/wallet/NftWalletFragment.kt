@@ -2,6 +2,7 @@ package com.asfoundation.wallet.ui.nft.wallet
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +54,11 @@ class NftWalletFragment : BasePageViewFragment(), NftWalletView {
     onBackPressedSubject = PublishSubject.create()
   }
 
+  override fun onDestroy() {
+    super.onDestroy()
+    presenter.dismiss()
+  }
+
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -77,6 +83,7 @@ class NftWalletFragment : BasePageViewFragment(), NftWalletView {
 
   override fun updateNftList(list: List<NftAsset>) {
     adapter.updateList(list)
+    Log.d("NFT", "UPDATE LIST")
   }
 
 
