@@ -1,6 +1,7 @@
 package com.asfoundation.wallet.ui.nft.wallet
 
 import android.view.View
+import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,8 @@ class NftWalletViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     if (!nft.isOwnedByMe) {
       itemView.nft_status.text = "In Transit"
       itemView.nft_status.visibility = VISIBLE
+    } else {
+      itemView.nft_status.visibility = INVISIBLE
     }
   }
 

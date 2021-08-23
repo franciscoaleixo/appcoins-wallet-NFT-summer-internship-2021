@@ -28,7 +28,7 @@
         android:text="ERCXXXX"
         android:textSize="12dp"
         android:textColor="@drawable/btn_light_text_color"
-        android:background="@drawable/button_light_background"
+        android:background="@drawable/rectangle_outline_red"
         android:transitionName="nftAssetName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

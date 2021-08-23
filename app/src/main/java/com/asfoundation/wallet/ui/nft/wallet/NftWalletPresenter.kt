@@ -36,11 +36,14 @@ class NftWalletPresenter(
 
   private fun recurrentUpdateNftList() {
     disposables.add(
-      Observable.interval(20, TimeUnit.SECONDS)
+      Observable.interval(60, TimeUnit.SECONDS)
         .flatMapSingle { nftInteractor.getNFTAsset() }
         .subscribeOn(networkScheduler)
         .observeOn(viewScheduler)
-        .doOnNext { view.updateNftList(it) }
+        .doOnNext {
+          view.updateNftList(it)
+          view.updateNftData(it.size.toString())
+        }
         .subscribe({}, { it.printStackTrace() })
     )
   }
