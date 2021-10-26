@@ -17,7 +17,7 @@ class NftWalletPresenter(
   fun present() {
     view.setupUI()
     requestNftList()
-    requestNftData()
+    //requestNftData()
     recurrentUpdateNftList()
   }
 
@@ -29,7 +29,9 @@ class NftWalletPresenter(
     disposables.add(nftInteractor.getNFTAsset()
       .subscribeOn(networkScheduler)
       .observeOn(viewScheduler)
-      .doOnSuccess { view.updateNftList(it) }
+      .doOnSuccess {
+        view.updateNftList(it)
+        view.updateNftData(it.size.toString())}
       .subscribe({}, { it.printStackTrace() })
     )
   }
